@@ -2,7 +2,7 @@ from flask import Flask
 
 from extensions import init_ext
 from .utils import add_generic_endpoints
-from config import config_options
+from LibraryAPI.config import config_options
 
 
 def create_app(config_name='default'):

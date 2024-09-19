@@ -1,4 +1,4 @@
-from flask import request, current_app
+from flask import request
 
 from . import users_bp
 from schemas.User import UserSchema
@@ -14,18 +14,21 @@ from LibraryAPI.utils import AppResponse
 def add_new_user():
     body = request.get_json(force=True)
     resp = AppResponse()
+    schema = UserSchema()
 
     try:
-        with Session.begin() as sess:
-            schema = UserSchema()
+        with Session() as sess:
             new_user = schema.load(body)
             sess.add(new_user)
-
+            sess.commit()
             res = schema.dump(new_user)
         return resp.success(
-            data=schema.dump(res),
+            data=res,
             message=ADDED_NEW_USER
         )
     except Exception as e:
-        print(str(e))
-        return resp.error(message=INVALID_DATA_FORMAT)
+        raise e
+        return resp.error(
+            data=str(e),
+            message=INVALID_DATA_FORMAT
+        )
