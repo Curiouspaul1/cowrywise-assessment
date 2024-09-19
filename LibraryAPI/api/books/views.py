@@ -1,3 +1,5 @@
+import datetime as dt
+
 from flask import (
     request,
     current_app
@@ -11,11 +13,13 @@ from schemas import (
     BorrowSchema
 )
 from models import Books
+from models.books import BookStatusEnum
 from LibraryAPI.utils import AppResponse
 from LibraryAPI.api.messages import (
     add_to_msg,
     BOOK_NOT_FOUND,
-    INVALID_DATA_FORMAT
+    INVALID_DATA_FORMAT,
+    BOOK_BORROWED
 )
 
 
@@ -94,11 +98,24 @@ def borrow_book_by_id(book_id):
                 404,
                 message=add_to_msg(BOOK_NOT_FOUND, book_id)
             )
+        if book.status == BookStatusEnum.BORROWED:
+            return AppResponse().error(
+                400,
+                message=BOOK_BORROWED
+            )
         try:
             new_borrow = schema.load(payload)
             new_borrow.book_id = book.id
+
+            # change state of book
+            book.status = BookStatusEnum.BORROWED
             sess.add(new_borrow)
             sess.commit()
+
+            book.curr_due_date = new_borrow.created_at + \
+                dt.timedelta(new_borrow.no_of_days)
+            sess.commit()
+
             resp = schema.dump(new_borrow)
         except Exception as e:
             raise e

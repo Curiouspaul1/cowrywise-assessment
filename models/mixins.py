@@ -11,4 +11,6 @@ class IdMixin:
 
 
 class TimestampMixin:
-    created_at: Mapped[dt.datetime] = mapped_column(default=dt.datetime.utcnow())
+    created_at: Mapped[dt.datetime] = mapped_column(
+        default=dt.datetime.utcnow()
+    )

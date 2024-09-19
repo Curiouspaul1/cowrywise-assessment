@@ -11,6 +11,7 @@ class Base:
         'DATABASE_URL',
         'sqlite+pysqlite:///:memory:'
     )
+    PAGINATION_LIMIT = 50
 
 
 class DevConfig(Base):
