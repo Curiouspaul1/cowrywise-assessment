@@ -118,7 +118,6 @@ def borrow_book_by_id(book_id):
 
             resp = schema.dump(new_borrow)
         except Exception as e:
-            raise e
             print(str(e))
             return AppResponse().error(
                 data=str(e),

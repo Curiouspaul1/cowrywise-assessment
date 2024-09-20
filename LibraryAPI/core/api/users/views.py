@@ -18,10 +18,17 @@ def add_new_user():
 
     try:
         with Session() as sess:
-            new_user = schema.load(body)
-            sess.add(new_user)
-            sess.commit()
-            res = schema.dump(new_user)
+            try:
+                new_user = schema.load(body)
+                sess.add(new_user)
+                sess.commit()
+                res = schema.dump(new_user)
+            except Exception as e:
+                print(str(e))
+                return AppResponse().error(
+                    data=str(e),
+                    message=INVALID_DATA_FORMAT
+                )
         return resp.success(
             data=res,
             message=ADDED_NEW_USER

@@ -9,8 +9,7 @@ from utils import send_request
 load_dotenv()
 
 huey = RedisHuey(
-    host=os.getenv('REDIS_HOST'),
-    password=os.getenv('REDIS_PASS')
+    host=os.getenv('REDIS_HOST')
 )
 
 

@@ -6,10 +6,11 @@ load_dotenv()
 
 
 class Base:
+    _base = os.path.abspath(os.getcwd())
     SECRET_KEY = os.getenv('APP_SECRET', str(os.urandom(12)))
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',
-        'sqlite+pysqlite:///:memory:'
+        f'sqlite+pysqlite:///{_base}/main.db'
     )
     PAGINATION_LIMIT = 50
 

@@ -1,0 +1,32 @@
+services:
+  redis:
+    image: redislabs/redismod
+    ports:
+      - '6379:6376'
+  admin-api:
+    image: admin-api:1.0
+    build:
+      context: ./AdminAPI
+      dockerfile: docker/dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./AdminAPI/.env
+    depends_on:
+      - redis
+  library-api:
+    image: library-api:1.0
+    build: ./LibraryAPI
+    ports:
+      - "5050:5050"
+    env_file:
+      - ./LibraryAPI/.env
+  huey-worker:
+    image: huey-worker:1.0
+    build: 
+      context: ./AdminAPI
+      dockerfile: docker/huey.Dockerfile
+    env_file:
+      - ./AdminAPI/.env
+    depends_on:
+      - redis
