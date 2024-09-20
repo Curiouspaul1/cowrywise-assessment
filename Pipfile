@@ -11,6 +11,10 @@ flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 alembic = "*"
 marshmallow = "*"
+huey = "*"
+requests = "*"
+redis = "*"
+gevent = "*"
 
 [dev-packages]
 

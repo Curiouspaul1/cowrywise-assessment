@@ -1,7 +1,13 @@
+import os
 from typing import Union
+
+import requests
 from flask import (
     Flask, Blueprint, jsonify
 )
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def add_generic_endpoints(
@@ -56,3 +62,24 @@ class AppResponse:
                 'message': message
             }
         ), error_code
+
+
+def send_request(url_path, payload, headers={}, form_data=False):
+    API_DOMAIN = os.getenv('LibraryService')
+    print(API_DOMAIN)
+    if form_data:
+        post = requests.post(
+            url=f"http://{API_DOMAIN}/{url_path}",
+            data=payload,
+            headers=headers
+        )
+    else:
+        post = requests.post(
+            url=f"http://{API_DOMAIN}/{url_path}",
+            json=payload,
+            headers=headers
+        )
+    if not post.status_code == 200:
+        print("An error occurred while sending request to LibraryService")
+        raise Exception(str(post.text))
+    return post.json()
